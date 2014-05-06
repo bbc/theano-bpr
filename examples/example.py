@@ -9,6 +9,6 @@ test_data, users_to_index, items_to_index = load_data_from_csv('week/testing.csv
 # Initialising BPR model
 bpr = BPR(10, len(users_to_index.keys()), len(items_to_index.keys()))
 # Training model
-bpr.train(train_data, epochs=1)
+bpr.train(train_data, epochs=10)
 # Testing model
 print bpr.test(test_data)
