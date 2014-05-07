@@ -2,7 +2,7 @@ theano-bpr
 ==========
 
 A library implementing Bayesian Personalised Ranking (BPR) for
-Matrix Factorisation, as decribed by Rendle et al. in :
+Matrix Factorisation, as described by Rendle et al. in :
 
   http://arxiv.org/abs/1205.2618
 
