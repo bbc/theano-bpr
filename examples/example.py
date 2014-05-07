@@ -20,9 +20,9 @@ from theano_bpr.utils import load_data_from_csv
 from theano_bpr import BPR
 import sys
 
-if len(sys.argv) == 2:
+if len(sys.argv) != 3:
     print "Usage: ./example.py training_data.csv testing_data.csv"
-    sys.exit(0)
+    sys.exit(1)
 
 # Loading train data
 train_data, users_to_index, items_to_index = load_data_from_csv(sys.argv[1])
