@@ -25,7 +25,7 @@ def test_bpr_train_stores_data():
         (0, 2),
         (1, 0),
         (1, 2),
-    ], batch_size=10)
+    ], batch_size=4)
     assert_equal(bpr._train_users, set([0, 1]))
     assert_equal(bpr._train_items, set([0, 1, 2]))
     assert_equal(bpr._train_dict, {
@@ -36,7 +36,7 @@ def test_bpr_train_stores_data():
 def test_bpr_train_and_test():
     bpr = BPR(10, 100, 50)
     train_data = zip(randint(100, size=1000), randint(50, size=1000))
-    bpr.train(train_data)
+    bpr.train(train_data, batch_size=50)
     assert(bpr.test(train_data) > 0.8)
     test_data = zip(randint(100, size=1000), randint(50, size=1000))
     assert(bpr.test(test_data) > 0.4 and bpr.test(test_data) < 0.6)
