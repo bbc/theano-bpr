@@ -150,6 +150,9 @@ class BPR(object):
           batches of length `batch_size`, and run one iteration of gradient
           descent for the batch.
         """
+        if len(train_data) < batch_size:
+            sys.stderr.write("WARNING: Batch size is greater than number of training samples, switching to a batch size of %s\n" % str(len(train_data)))
+            batch_size = len(train_data)
         self._train_dict, self._train_users, self._train_items = self._data_to_dict(train_data)
         sgd_users, sgd_pos_items, sgd_neg_items = self._uniform_user_sampling(len(train_data) * epochs)
         z = 0
