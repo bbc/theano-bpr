@@ -22,7 +22,7 @@ from collections import defaultdict
 
 class BPR(object):
 
-    def __init__(self, rank, n_users, n_items, lambda_u = 0.0025, lambda_i = 0.0025, lambda_j = 0.00025, learning_rate = 0.05):
+    def __init__(self, rank, n_users, n_items, lambda_u = 0.0025, lambda_i = 0.0025, lambda_j = 0.00025, lambda_bias = 0.0001, learning_rate = 0.05):
         """
           Creates a new object for training and testing a Bayesian
           Personalised Ranking (BPR) Matrix Factorisation 
@@ -81,6 +81,7 @@ class BPR(object):
         self._lambda_u = lambda_u
         self._lambda_i = lambda_i
         self._lambda_j = lambda_j
+        self._lambda_bias = lambda_bias
         self._learning_rate = learning_rate
         self._train_users = set()
         self._train_items = set()
@@ -121,18 +122,21 @@ class BPR(object):
         self.W = theano.shared(numpy.random.random((self._n_users, self._rank)).astype('float32'), name='W')
         self.H = theano.shared(numpy.random.random((self._n_items, self._rank)).astype('float32'), name='H')
 
+        self.B = theano.shared(numpy.zeros(self._n_items).astype('float32'), name='B')
+
         x_ui = T.dot(self.W[u], self.H[i].T).diagonal()
         x_uj = T.dot(self.W[u], self.H[j].T).diagonal()
 
-        x_uij = x_ui - x_uj
+        x_uij = self.B[i] - self.B[j] + x_ui - x_uj
 
-        obj = T.sum(T.log(T.nnet.sigmoid(x_uij)) - self._lambda_u * (self.W[u] ** 2).sum(axis=1) - self._lambda_i * (self.H[i] ** 2).sum(axis=1) - self._lambda_j * (self.H[j] ** 2).sum(axis=1))
+        obj = T.sum(T.log(T.nnet.sigmoid(x_uij)) - self._lambda_u * (self.W[u] ** 2).sum(axis=1) - self._lambda_i * (self.H[i] ** 2).sum(axis=1) - self._lambda_j * (self.H[j] ** 2).sum(axis=1) - self._lambda_bias * (self.B[i] ** 2 + self.B[j] ** 2))
         cost = - obj
 
         g_cost_W = T.grad(cost=cost, wrt=self.W)
         g_cost_H = T.grad(cost=cost, wrt=self.H)
+        g_cost_B = T.grad(cost=cost, wrt=self.B)
 
-        updates = [ (self.W, self.W - self._learning_rate * g_cost_W), (self.H, self.H - self._learning_rate * g_cost_H) ]
+        updates = [ (self.W, self.W - self._learning_rate * g_cost_W), (self.H, self.H - self._learning_rate * g_cost_H), (self.B, self.B - self._learning_rate * g_cost_B) ]
 
         self.train_model = theano.function(inputs=[u, i, j], outputs=cost, updates=updates)
 
