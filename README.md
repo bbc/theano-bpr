@@ -6,8 +6,9 @@ Matrix Factorisation, as described by Rendle et al. in :
 
   http://arxiv.org/abs/1205.2618
 
-This models tried to predict a ranking of items for each
-user from a viewing history. It's also used in a variety
+This model tries to predict a personalised ranking of items
+from a user's viewing history. It has been shown to be
+very efficient for recommendation tasks. It's also used in a variety
 of other tasks, such as matrix completion, link prediction
 and tag recommendation.
 
