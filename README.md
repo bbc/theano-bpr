@@ -13,8 +13,8 @@ of other tasks, such as matrix completion, link prediction
 and tag recommendation.
 
 This library uses [Theano](http://deeplearning.net/software/theano/) and
-can therefore run on a [GPU through CUDA](http://deeplearning.net/software/theano/tutorial/using_gpu.html) or on the CPU. 
-In the latter case we recommend using [OpenBlas](http://www.openblas.net).
+can therefore run on a [GPU through CUDA](http://deeplearning.net/software/theano/tutorial/using_gpu.html) or on the CPU,
+for which you'll need a working BLAS. We recommend using [OpenBlas](http://www.openblas.net).
 
 Installation
 ------------

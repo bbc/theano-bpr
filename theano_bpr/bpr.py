@@ -60,7 +60,7 @@ class BPR(object):
           Example use (10 latent dimensions, 100 users, 50 items) for
           training:
 
-          >>> from bpr import BPR
+          >>> from theano_bpr import BPR
           >>> bpr = BPR(10, 100, 50) 
           >>> from numpy.random import randint
           >>> train_data = zip(randint(100, size=1000), randint(50, size=1000))
