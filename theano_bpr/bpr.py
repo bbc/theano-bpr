@@ -154,10 +154,11 @@ class BPR(object):
             sys.stderr.write("WARNING: Batch size is greater than number of training samples, switching to a batch size of %s\n" % str(len(train_data)))
             batch_size = len(train_data)
         self._train_dict, self._train_users, self._train_items = self._data_to_dict(train_data)
-        sgd_users, sgd_pos_items, sgd_neg_items = self._uniform_user_sampling(len(train_data) * epochs)
+        n_sgd_samples = len(train_data) * epochs
+        sgd_users, sgd_pos_items, sgd_neg_items = self._uniform_user_sampling(n_sgd_samples)
         z = 0
-        t1 = t0 = time.time()
-        while (z+1)*batch_size < len(train_data)*epochs:
+        t2 = t1 = t0 = time.time()
+        while (z+1)*batch_size < n_sgd_samples:
             self.train_model(
                 sgd_users[z*batch_size: (z+1)*batch_size],
                 sgd_pos_items[z*batch_size: (z+1)*batch_size],
@@ -165,11 +166,12 @@ class BPR(object):
             )
             z += 1
             t2 = time.time()
-            sys.stderr.write("\rProcessed %s ( %.2f%% ) in %.4f seconds" %(str(z*batch_size), 100.0 * float(z*batch_size)/(len(train_data)*epochs), t2 - t1))
+            sys.stderr.write("\rProcessed %s ( %.2f%% ) in %.4f seconds" %(str(z*batch_size), 100.0 * float(z*batch_size)/n_sgd_samples, t2 - t1))
             sys.stderr.flush()
             t1 = t2
-        sys.stderr.write("\nTotal training time %.2f seconds; %e per sample\n" % (t2 - t0, (t2 - t0)/(len(train_data) * epochs)))
-        sys.stderr.flush()
+        if n_sgd_samples > 0:
+            sys.stderr.write("\nTotal training time %.2f seconds; %e per sample\n" % (t2 - t0, (t2 - t0)/n_sgd_samples))
+            sys.stderr.flush()
 
     def _uniform_user_sampling(self, n_samples):
         """
