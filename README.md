@@ -24,7 +24,8 @@ Installation
 Usage
 -----
 
-See examples/
+An iPython Notebook demonstrating the use of theano-bpr over the
+Movielens dataset [is available in examples/](http://nbviewer.ipython.org/github/bbcrd/theano-bpr/blob/master/examples/example.ipynb).
 
 Testing
 -------
