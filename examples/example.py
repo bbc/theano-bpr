@@ -31,7 +31,7 @@ test_data, users_to_index, items_to_index = load_data_from_csv(sys.argv[2], user
 
 # Initialising BPR model, 10 latent factors
 bpr = BPR(10, len(users_to_index.keys()), len(items_to_index.keys()))
-# Training model, 10 epochs
+# Training model, 30 epochs
 bpr.train(train_data, epochs=30)
 # Testing model
 print bpr.test(test_data)
