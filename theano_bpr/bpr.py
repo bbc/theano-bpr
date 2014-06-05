@@ -22,7 +22,7 @@ from collections import defaultdict
 
 class BPR(object):
 
-    def __init__(self, rank, n_users, n_items, lambda_u = 0.0025, lambda_i = 0.0025, lambda_j = 0.00025, lambda_bias = 0.0001, learning_rate = 0.05):
+    def __init__(self, rank, n_users, n_items, lambda_u = 0.0025, lambda_i = 0.0025, lambda_j = 0.00025, lambda_bias = 0.0, learning_rate = 0.05):
         """
           Creates a new object for training and testing a Bayesian
           Personalised Ranking (BPR) Matrix Factorisation 
@@ -135,6 +135,7 @@ class BPR(object):
         g_cost_W = T.grad(cost=cost, wrt=self.W)
         g_cost_H = T.grad(cost=cost, wrt=self.H)
         g_cost_B = T.grad(cost=cost, wrt=self.B)
+        self.get_g_cost_B = theano.function(inputs=[u,i,j], outputs=g_cost_B)
 
         updates = [ (self.W, self.W - self._learning_rate * g_cost_W), (self.H, self.H - self._learning_rate * g_cost_H), (self.B, self.B - self._learning_rate * g_cost_B) ]
 
@@ -209,6 +210,7 @@ class BPR(object):
         test_dict, test_users, test_items = self._data_to_dict(test_data)
         w = self.W.get_value()
         h = self.H.get_value()
+        b = self.B.get_value()
         auc_values = []
         z = 0
         for user in test_dict.keys():
@@ -221,7 +223,7 @@ class BPR(object):
                         for neg_item in self._train_items:
                             if neg_item not in test_dict[user] and neg_item not in self._train_dict[user]:
                                 n += 1
-                                if predictions[pos_item] > predictions[neg_item]:
+                                if b[pos_item] + predictions[pos_item] > b[neg_item] + predictions[neg_item]:
                                     auc_for_user += 1
                 if n > 0:
                     auc_for_user /= n
