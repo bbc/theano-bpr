@@ -46,3 +46,11 @@ def test_bpr_train_no_epochs():
     train_data = zip(randint(100, size=1000), randint(50, size=1000))
     bpr.train(train_data, epochs=0)
     assert(bpr.test(train_data) > 0.4 and bpr.test(train_data) < 0.6)
+
+def test_bpr_predictions():
+    bpr = BPR(10, 100, 50)
+    train_data = zip(randint(100, size=1000), randint(50, size=1000))
+    bpr.train(train_data, epochs=1)
+    assert_equal(bpr.predictions(0).shape, (50,))
+    assert_equal(bpr.prediction(0,0), bpr.predictions(0)[0])
+    assert_equal(len(bpr.top_predictions(0, topn=20)), 20)

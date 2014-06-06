@@ -197,6 +197,38 @@ class BPR(object):
             sgd_neg_items.append(neg_item)
         return sgd_users, sgd_pos_items, sgd_neg_items
 
+    def predictions(self, user_index):
+        """
+          Computes item predictions for `user_index`.
+          Returns an array of prediction values for each item
+          in the dataset.
+        """
+        w = self.W.get_value()
+        h = self.H.get_value()
+        b = self.B.get_value()
+        user_vector = w[user_index,:]
+        return user_vector.dot(h.T) + b
+
+    def prediction(self, user_index, item_index):
+        """
+          Predicts the preference of a given `user_index`
+          for a gven `item_index`.
+        """
+        return self.predictions(user_index)[item_index]
+
+    def top_predictions(self, user_index, topn=10):
+        """
+          Returns the item indices of the top predictions
+          for `user_index`. The number of predictions to return
+          can be set via `topn`.
+          This won't return any of the items associated with `user_index`
+          in the training set.
+        """
+        return [ 
+            item_index for item_index in numpy.argsort(self.predictions(user_index)) 
+            if item_index not in self._train_dict[user_index]
+        ][::-1][:topn]
+
     def test(self, test_data):
         """
           Computes the Area Under Curve (AUC) on `test_data`.
@@ -208,22 +240,19 @@ class BPR(object):
           for non-overlapping training and testing sets.
         """
         test_dict, test_users, test_items = self._data_to_dict(test_data)
-        w = self.W.get_value()
-        h = self.H.get_value()
-        b = self.B.get_value()
         auc_values = []
         z = 0
         for user in test_dict.keys():
             if user in self._train_users:
                 auc_for_user = 0.0
                 n = 0
-                predictions = w[user,:].dot(h.T)
+                predictions = self.predictions(user)
                 for pos_item in test_dict[user]:
                     if pos_item in self._train_items:
                         for neg_item in self._train_items:
                             if neg_item not in test_dict[user] and neg_item not in self._train_dict[user]:
                                 n += 1
-                                if b[pos_item] + predictions[pos_item] > b[neg_item] + predictions[neg_item]:
+                                if predictions[pos_item] > predictions[neg_item]:
                                     auc_for_user += 1
                 if n > 0:
                     auc_for_user /= n
