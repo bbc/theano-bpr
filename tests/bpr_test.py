@@ -34,7 +34,7 @@ def test_bpr_train_stores_data():
     })
 
 def test_bpr_train_and_test():
-    bpr = BPR(10, 100, 50)
+    bpr = BPR(10, 200, 50)
     train_data = zip(randint(100, size=1000), randint(50, size=1000))
     bpr.train(train_data, batch_size=50)
     assert(bpr.test(train_data) > 0.8)
