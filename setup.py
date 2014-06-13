@@ -18,7 +18,7 @@ from setuptools import setup
 
 setup(
     name='theano-bpr',
-    version='0.1.0',
+    version='0.1.1',
     description='Bayesian Personalised Ranking implemented in Theano',
     author='Yves Raimond',
     author_email='yves.raimond@bbc.co.uk',
