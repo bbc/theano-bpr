@@ -186,7 +186,7 @@ class BPR(object):
           user sample.
         """
         sys.stderr.write("Generating %s random training samples\n" % str(n_samples))
-        sgd_users = numpy.array(list(self._train_users))[numpy.random.randint(self._n_users, size=n_samples)]
+        sgd_users = numpy.array(list(self._train_users))[numpy.random.randint(len(list(self._train_users)), size=n_samples)]
         sgd_pos_items, sgd_neg_items = [], []
         for sgd_user in sgd_users:
             pos_item = self._train_dict[sgd_user][numpy.random.randint(len(self._train_dict[sgd_user]))]
