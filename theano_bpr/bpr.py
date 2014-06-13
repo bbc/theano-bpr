@@ -135,7 +135,6 @@ class BPR(object):
         g_cost_W = T.grad(cost=cost, wrt=self.W)
         g_cost_H = T.grad(cost=cost, wrt=self.H)
         g_cost_B = T.grad(cost=cost, wrt=self.B)
-        self.get_g_cost_B = theano.function(inputs=[u,i,j], outputs=g_cost_B)
 
         updates = [ (self.W, self.W - self._learning_rate * g_cost_W), (self.H, self.H - self._learning_rate * g_cost_H), (self.B, self.B - self._learning_rate * g_cost_B) ]
 
