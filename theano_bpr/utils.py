@@ -15,11 +15,11 @@
 # limitations under the License.
 
 from collections import defaultdict
-import urllib
+import urllib, csv
 
-def load_data_from_csv(csv, users_to_i = {}, items_to_i = {}):
+def load_data_from_csv(csv_file, users_to_i = {}, items_to_i = {}):
     """
-      Loads data from a CSV file located at `csv` 
+      Loads data from a CSV file located at `csv_file` 
       where each line is of the form:
 
         user_id_1, item_id_1
@@ -35,9 +35,9 @@ def load_data_from_csv(csv, users_to_i = {}, items_to_i = {}):
       and a mapping from item ids to integers.
     """
     raw_data = []
-    with open(csv) as f:
-        for line in f.readlines():
-            user, item = line.strip().split(',')
+    with open(csv_file) as f:
+        csvreader = csv.reader(f)
+        for user, item in csvreader:
             raw_data.append((user, item))
     return load_data_from_array(raw_data, users_to_i, items_to_i)
 

@@ -37,7 +37,7 @@ def test_load_data_from_csv():
       'user_id8': 3,
     })
     assert_equal(item_index, {
-      'item_id10': 0,
+      'item_,id10': 0,
       'item_id0': 1,
       'item_id53': 2,
       'item_id32': 3,
@@ -65,7 +65,7 @@ def test_load_data_from_csv_with_initial_mapping():
     assert_equal(item_index, {
       'item_id53': 0,
       'item_id32': 1,
-      'item_id10': 2,
+      'item_,id10': 2,
       'item_id0': 3,
       'item_id3': 4,
     })
